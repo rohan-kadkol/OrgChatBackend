@@ -1,5 +1,5 @@
 from flask import jsonify
-from init_flask import app, conn
+from ..init_flask import app, conn
 
 @app.route('/organizations', methods=['GET'])
 def organizations():

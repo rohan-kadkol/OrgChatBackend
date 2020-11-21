@@ -1,12 +1,12 @@
 from flask import Flask, jsonify
 from sqlalchemy import create_engine
 
-from init_flask import app, conn
+from .init_flask import app, conn
 
-from user import *
-from organization import *
-from registration import *
-from type import *
+from .models.user import *
+from .models.organization import *
+from .models.registration import *
+from .models.type import *
 
 @app.route('/')
 def index():
