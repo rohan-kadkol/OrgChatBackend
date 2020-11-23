@@ -9,6 +9,7 @@ from models.registration import *
 from models.type import *
 from models.room import *
 from models.room_user import *
+from models.message import *
 
 @app.route('/')
 def index():
