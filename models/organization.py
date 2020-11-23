@@ -88,3 +88,26 @@ def registrations(organization_id):
         'success': True,
         'registrations': registrations
     })
+
+@app.route('/organizations/<int:organization_id>/rooms', methods=['GET'])
+def test_rooms(organization_id):
+    results = conn.execute(
+        f""" select 	room.ID,
+	                room.name,
+	                room.public,
+                    organization.name as organization
+            from	room join organization
+            where   room.organization = organization.ID and
+                    room.organization = {organization_id};""")
+    rooms = []
+    for row in results:
+        rooms.append({
+            'ID': row['ID'],
+            'name': row['name'],
+            'public': True if row['public'] == 1 else False,
+            'organization': row['organization']
+        })
+    return jsonify({
+        'success': True,
+        'rooms': rooms
+    })

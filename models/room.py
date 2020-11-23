@@ -2,8 +2,8 @@ from flask import jsonify
 from init_flask import app, conn
 
 
-@app.route('/rooms', methods=['GET'])
-def rooms():
+@app.route('/test/rooms', methods=['GET'])
+def test_rooms():
     results = conn.execute(
         """ select 	room.ID,
 	                room.name,
