@@ -19,16 +19,6 @@ def test_users():
 
 @app.route('/users', methods=['GET'])
 def users():
-    # print(type(request.data))
-    # name = request.get_json['name']
-    # print(type(name))
-
-    # print(request.data)
-    # print(request.get_json)
-    # print(request.json)
-
-    # print(type(request.json))
-    # name = request.json['name'] if request.json.contains()
     query = request.args.get('query')
 
     results = conn.execute(f""" select * from user
