@@ -7,6 +7,7 @@ from models.user import *
 from models.organization import *
 from models.registration import *
 from models.type import *
+from models.room import *
 
 @app.route('/')
 def index():
