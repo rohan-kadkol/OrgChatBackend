@@ -50,7 +50,7 @@ def organizations():
     })
 
 @app.route('/organizations/<int:organization_id>/users', methods=['GET'])
-def registrations(organization_id):
+def organization_users(organization_id):
     results = conn.execute(
         f""" select 	user.ID as user_id,
 	                user.name as user_name,
@@ -90,7 +90,7 @@ def registrations(organization_id):
     })
 
 @app.route('/organizations/<int:organization_id>/rooms', methods=['GET'])
-def test_rooms(organization_id):
+def organization_rooms(organization_id):
     results = conn.execute(
         f""" select 	room.ID,
 	                room.name,
@@ -119,7 +119,7 @@ def add_organization():
         type = request.json['type']
         location = request.json['location']
 
-        result = conn.execute(
+        conn.execute(
             """ insert into organization (name, type, location) values 
                             (   %(name)s,
                                 %(type)s,
@@ -128,6 +128,29 @@ def add_organization():
 
         return jsonify({
             'success': True,
+        })
+    except Exception as ex:
+        print(ex)
+        return jsonify({
+            'success': False,
+            'error': str(ex)
+        }), 400
+
+@app.route('/organizations/<int:organization_id>/rooms', methods=['POST'])
+def add_organization_rooms(organization_id):
+    try:
+        name = request.json['name']
+        public = request.json['public']
+
+        conn.execute(
+            """ insert into room (name, public, organization) values 
+                            (   %(name)s,
+                                %(public)s,
+                                %(organization)s);""", 
+                                {'name': name, 'public': public, 'organization': organization_id})
+
+        return jsonify({
+            'success': True
         })
     except Exception as ex:
         print(ex)
