@@ -39,7 +39,7 @@ def users():
     })
 
 @app.route('/users', methods=['POST'])
-def add_users():
+def add_user():
     try:
         ID = request.json['ID']
         name = request.json['name']

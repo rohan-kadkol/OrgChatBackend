@@ -111,3 +111,27 @@ def test_rooms(organization_id):
         'success': True,
         'rooms': rooms
     })
+
+@app.route('/organizations', methods=['POST'])
+def add_organization():
+    try:
+        name = request.json['name']
+        type = request.json['type']
+        location = request.json['location']
+
+        result = conn.execute(
+            """ insert into organization (name, type, location) values 
+                            (   %(name)s,
+                                %(type)s,
+                                %(location)s);""", 
+                                {'name': name, 'type': type, 'location': location})
+
+        return jsonify({
+            'success': True,
+        })
+    except Exception as ex:
+        print(ex)
+        return jsonify({
+            'success': False,
+            'error': str(ex)
+        }), 400
