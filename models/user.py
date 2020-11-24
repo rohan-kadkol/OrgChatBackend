@@ -37,3 +37,29 @@ def users():
         'success': True,
         'users': users
     })
+
+@app.route('/users', methods=['POST'])
+def add_users():
+    try:
+        ID = request.json['ID']
+        name = request.json['name']
+        phone_number = request.json['phone_number']
+        email = request.json['email']
+
+        conn.execute(
+            """ insert into user (ID, name, phone_number, email) values 
+                            (   %(ID)s,
+                                %(name)s,
+                                %(phone_number)s,
+                                %(email)s);""", 
+                                {'ID': ID, 'name': name, 'phone_number': phone_number, 'email': email})
+
+        return jsonify({
+            'success': True,
+        })
+    except Exception as ex:
+        print(ex)
+        return jsonify({
+            'success': False,
+            'error': str(ex)
+        }), 400
