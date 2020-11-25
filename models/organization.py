@@ -33,9 +33,9 @@ def organizations():
                     type.name as type,
                     organization.location 
             from organization join type
-            where   organization.type = type.ID and
+            where   organization.type = type.ID and (
                     organization.name like '%%{query}%%' or
-                    organization.location like '%%{query}%%';""")
+                    organization.location like '%%{query}%%');""")
     organizations = []
     for row in results:
         organizations.append({
