@@ -63,3 +63,44 @@ def add_user():
             'success': False,
             'error': str(ex)
         }), 400
+        
+@app.route('/users/<string:user_id>/organizations', methods=['GET'])
+def user_organizations(user_id):
+    query = request.args.get('query')
+
+    print(f""" select  organization.ID, 
+                    organization.name,
+                    type.name as type,
+                    organization.location 
+            from registration join organization join type
+            where   registration.OID = organization.ID and
+                    organization.type = type.ID and (
+                    organization.name like '%{query}%' or
+                    organization.location like '%{query}%')
+                    and
+                    registration.UID = '{user_id}';""")
+
+    results = conn.execute(
+        f""" select  organization.ID, 
+                    organization.name,
+                    type.name as type,
+                    organization.location 
+            from registration join organization join type
+            where   registration.OID = organization.ID and
+                    organization.type = type.ID and (
+                    organization.name like '%%{query}%%' or
+                    organization.location like '%%{query}%%')
+                    and
+                    registration.UID = '{user_id}';""")
+    organizations = []
+    for row in results:
+        organizations.append({
+            'ID': row['ID'],
+            'name': row['name'],
+            'type': row['type'],
+            'location': row['location']
+        })
+    return jsonify({
+        'success': True,
+        'organizations': organizations
+    })
