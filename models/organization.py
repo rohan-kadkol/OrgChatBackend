@@ -85,6 +85,29 @@ def organization_users(organization_id):
         'success': True,
         'registrations': registrations
     })
+    
+@app.route('/organizations/<int:organization_id>/users/<string:user_id>/rooms')
+def organization_user_rooms(organization_id, user_id):
+    results = conn.execute(
+        f"""    select  room.ID,
+                        room.name,
+                        room.public,
+                        room.organization
+                from room_user join room
+                where room_user.UID='{user_id}' and room_user.RID=room.ID and room.organization={organization_id};""")
+    rooms = []
+    for row in results:
+        rooms.append({
+            'ID': row['ID'],
+            'name': row['name'],
+            'public': True if row['public'] == 1 else False,
+            'organization': row['organization']
+        })
+    return jsonify({
+        'success': True,
+        'rooms': rooms
+    })
+
 
 @app.route('/organizations/<int:organization_id>/rooms', methods=['GET'])
 def organization_rooms(organization_id):
