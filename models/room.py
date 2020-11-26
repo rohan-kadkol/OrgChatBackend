@@ -23,3 +23,30 @@ from init_flask import app, conn
 #         'success': True,
 #         'rooms': rooms
 #     })
+
+@app.route('/rooms/<int:room_id>/messages', methods=['GET'])
+def room_messages(room_id):
+    str = f""" select  message.ID,
+                message.message,
+                message.sender,
+                user.name,
+                UNIX_TIMESTAMP(timestamp) as timestamp
+        from message join user on message.sender=user.ID
+        where room={room_id} order by message.ID desc;"""
+
+    print(str)
+
+    results = conn.execute(str)
+    messages = []
+    for row in results:
+        messages.append({
+            'ID': row['ID'],
+            'message': row['message'],
+            'sender': row['sender'],
+            'name': row['name'],
+            'timestamp': row['timestamp']
+        })
+    return jsonify({
+        'success': True,
+        'messages': messages
+    })
