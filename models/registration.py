@@ -28,7 +28,7 @@ def test_registrations():
             'user_phone_number': row['user_phone_number'],
             'user_email': row['user_email'],
             'organization_id': row['organization_id'],
-            'organization_name': row['organization_id'],
+            'organization_name': row['organization_name'],
             'organization_type': row['organization_type'],
             'organization_location': row['organization_location'],
         })

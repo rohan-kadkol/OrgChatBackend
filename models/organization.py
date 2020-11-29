@@ -85,6 +85,24 @@ def organization_users(organization_id):
         'success': True,
         'registrations': registrations
     })
+
+@app.route('/organizations/<int:organization_id>/users', methods=['POST'])
+def add_user_to_organization(organization_id):
+    try :
+        user_id = request.json['user_id']
+        print(user_id)
+
+        conn.execute('insert into registration values (%(uid)s, %(oid)s);', {'uid': user_id, 'oid': organization_id})
+        
+        return jsonify({
+            'success': True,
+        })
+    except Exception as ex:
+        print(ex);
+        return jsonify({
+            'success': False,
+            'error': str(ex)
+        }), 400
     
 @app.route('/organizations/<int:organization_id>/users/<string:user_id>/rooms')
 def organization_user_rooms(organization_id, user_id):
