@@ -2,7 +2,7 @@ from flask import jsonify, abort, request
 from init_flask import app, conn_ml
 
 
-@app.route('/prediction/data', methods=['POST'])
+@app.route('/prediction/data', methods=['GET', 'POST'])
 def add_data():
     data = str(request.json['data'])
     _class = int(request.json['class'])
