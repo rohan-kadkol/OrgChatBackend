@@ -9,3 +9,6 @@ password = os.environ['ORGCHAT_DB_PASSWORD']
 app = Flask(__name__)
 engine = create_engine(f'mysql://{username}:{password}@localhost:3306/orgchat')
 conn = engine.connect()
+
+engine_ml = create_engine(f'mysql://{username}:{password}@localhost:3306/emojipredict')
+conn_ml = engine_ml.connect()
