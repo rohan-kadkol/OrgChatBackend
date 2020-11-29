@@ -112,7 +112,16 @@ def organization_user_rooms(organization_id, user_id):
                         room.public,
                         room.organization
                 from room_user join room
-                where room_user.UID='{user_id}' and room_user.RID=room.ID and room.organization={organization_id};""")
+                where room_user.UID='{user_id}' and room_user.RID=room.ID and room.organization={organization_id}
+
+                union
+                
+                select  room.ID,
+                        room.name,
+                        room.public,
+                        room.organization
+                from room
+                where room.organization={organization_id} and room.public=1;""")
     rooms = []
     for row in results:
         rooms.append({
