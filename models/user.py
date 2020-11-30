@@ -1,5 +1,6 @@
 from flask import jsonify, request
 from init_flask import app, conn
+from flask_cors import CORS, cross_origin
 
 @app.route('/test/users', methods=['GET'])
 def test_users():
@@ -18,6 +19,7 @@ def test_users():
     })
 
 @app.route('/users', methods=['GET'])
+@cross_origin()
 def users():
     query = request.args.get('query')
 
