@@ -35,12 +35,13 @@ def room_messages(room_id):
 
     results = conn.execute(str)
     messages = []
-
-    print(len(results))
+    
     print(results)
     print(type(results))
 
+    length = 0
     for row in results:
+        length = length + 1
         messages.append({
             'ID': row['ID'],
             'message': row['message'],
@@ -48,6 +49,11 @@ def room_messages(room_id):
             'name': row['name'],
             'timestamp': row['timestamp']
         })
+
+    print(len)
+    print(len(messages))
+    print(messages)
+
     return jsonify({
         'success': True,
         'messages': messages
