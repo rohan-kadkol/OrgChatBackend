@@ -35,7 +35,8 @@ def room_messages(room_id):
 
     results = conn.execute(str)
     messages = []
-    
+
+    print('START')    
     print(results)
     print(type(results))
 
@@ -53,6 +54,7 @@ def room_messages(room_id):
     print(len)
     print(len(messages))
     print(messages)
+    print('END')
 
     return jsonify({
         'success': True,
@@ -69,11 +71,11 @@ def send_message(room_id):
         conn.execute('insert into message (message, sender, timestamp, room) values (%(message)s, %(sender)s, now(), %(room)s);',
                      {'message': message, 'sender': sender, 'room': room_id})
 
-        # message_ref = db.collection(u'orgchat').document(u'main')
-        # message = message_ref.get().to_dict()
-        # print(message)
-        # message['orgchat'] = (message['orgchat'] + 1) % 1000
-        # message_ref.set(message)
+        message_ref = db.collection(u'orgchat').document(u'main')
+        message = message_ref.get().to_dict()
+        print(message)
+        message['orgchat'] = (message['orgchat'] + 1) % 1000
+        message_ref.set(message)
 
         return jsonify({
             'success': True,
