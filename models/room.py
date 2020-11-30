@@ -1,6 +1,5 @@
 from flask import jsonify, request
-from init_flask import app, conn
-
+from init_flask import app, conn, db
 
 # @app.route('/test/rooms', methods=['GET'])
 # def test_rooms():
@@ -60,6 +59,12 @@ def send_message(room_id):
 
         conn.execute('insert into message (message, sender, timestamp, room) values (%(message)s, %(sender)s, now(), %(room)s);',
                      {'message': message, 'sender': sender, 'room': room_id})
+
+        message_ref = db.collection(u'orgchat').document(u'main')
+        message = message_ref.get().to_dict()
+        print(message)
+        message['orgchat'] = (message['orgchat'] + 1) % 1000
+        message_ref.set(message)
 
         return jsonify({
             'success': True,
