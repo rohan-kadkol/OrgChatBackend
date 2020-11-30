@@ -1,4 +1,4 @@
-from flask import jsonify
+from flask import jsonify, request
 from init_flask import app, conn
 
 
@@ -50,3 +50,23 @@ def room_messages(room_id):
         'success': True,
         'messages': messages
     })
+
+
+@app.route('/rooms/<int:room_id>/messages', methods=['POST'])
+def send_message(room_id):
+    try:
+        message = request.json['message']
+        sender = request.json['sender']
+
+        conn.execute('insert into message (message, sender, timestamp, room) values (%(message)s, %(sender)s, now(), %(room)s);',
+                     {'message': message, 'sender': sender, 'room': room_id})
+
+        return jsonify({
+            'success': True,
+        })
+    except Exception as ex:
+        print(ex)
+        return jsonify({
+            'success': False,
+            'error': str(ex)
+        })
