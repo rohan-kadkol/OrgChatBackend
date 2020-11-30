@@ -104,7 +104,7 @@ def add_user_to_organization(organization_id):
             'error': str(ex)
         }), 400
     
-@app.route('/organizations/<int:organization_id>/users/<string:user_id>/rooms')
+@app.route('/organizations/<int:organization_id>/users/<string:user_id>/rooms', methods=['GET'])
 def organization_user_rooms(organization_id, user_id):
     results = conn.execute(
         f"""    select  room.ID,
@@ -115,7 +115,7 @@ def organization_user_rooms(organization_id, user_id):
                 where room_user.UID='{user_id}' and room_user.RID=room.ID and room.organization={organization_id}
 
                 union
-                
+
                 select  room.ID,
                         room.name,
                         room.public,
@@ -134,6 +134,28 @@ def organization_user_rooms(organization_id, user_id):
         'success': True,
         'rooms': rooms
     })
+
+@app.route('/organizations/<int:organization_id>/users/<string:user_id>/rooms', methods=['POST'])
+def add_room_to_organization_and_enroll_user_in_rooms(organization_id, user_id):
+    name = request.json['name']
+    public = request.json['public']
+
+    trans = conn.begin()
+    try:
+        result = conn.execute('insert into room (name, public, organization) values (%(name)s, %(public)s, %(organization)s);', {'name': name, 'public': public, 'organization': organization_id})
+        inserted_room_id = result.lastrowid
+        conn.execute('insert into room_user values (%(RID)s, %(UID)s);', {'RID': inserted_room_id, 'UID': user_id})
+        trans.commit()
+        return jsonify({
+            'success': True
+        })
+    except Exception as e:
+        print(e)
+        trans.rollback()
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 400
 
 
 @app.route('/organizations/<int:organization_id>/rooms', methods=['GET'])
