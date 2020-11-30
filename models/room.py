@@ -33,10 +33,13 @@ def room_messages(room_id):
         from message join user on message.sender=user.ID
         where room={room_id} order by message.ID desc;"""
 
-    print(str)
-
     results = conn.execute(str)
     messages = []
+
+    print(len(results))
+    print(results)
+    print(type(results))
+
     for row in results:
         messages.append({
             'ID': row['ID'],
@@ -60,11 +63,11 @@ def send_message(room_id):
         conn.execute('insert into message (message, sender, timestamp, room) values (%(message)s, %(sender)s, now(), %(room)s);',
                      {'message': message, 'sender': sender, 'room': room_id})
 
-        message_ref = db.collection(u'orgchat').document(u'main')
-        message = message_ref.get().to_dict()
-        print(message)
-        message['orgchat'] = (message['orgchat'] + 1) % 1000
-        message_ref.set(message)
+        # message_ref = db.collection(u'orgchat').document(u'main')
+        # message = message_ref.get().to_dict()
+        # print(message)
+        # message['orgchat'] = (message['orgchat'] + 1) % 1000
+        # message_ref.set(message)
 
         return jsonify({
             'success': True,
