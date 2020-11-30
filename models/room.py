@@ -25,6 +25,15 @@ from init_flask import app, conn, db
 
 @app.route('/rooms/<int:room_id>/messages', methods=['GET'])
 def room_messages(room_id):
+    import os
+    from sqlalchemy import create_engine
+
+    username = os.environ['ORGCHAT_DB_USERNAME']
+    password = os.environ['ORGCHAT_DB_PASSWORD']
+    
+    engine1 = create_engine(f'mysql://{username}:{password}@localhost:3306/orgchat')
+    conn1 = engine1.connect()
+
     str = f""" select  message.ID,
                 message.message,
                 message.sender,
@@ -33,7 +42,7 @@ def room_messages(room_id):
         from message join user on message.sender=user.ID
         where room={room_id} order by message.ID desc;"""
 
-    results = conn.execute(str)
+    results = conn1.execute(str)
     messages = []
 
     print('START')    
@@ -51,10 +60,12 @@ def room_messages(room_id):
             'timestamp': row['timestamp']
         })
 
-    print(len)
+    print(length)
     print(len(messages))
     print(messages)
     print('END')
+
+    conn1.close()
 
     return jsonify({
         'success': True,
