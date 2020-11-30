@@ -41,6 +41,7 @@ def users():
     })
 
 @app.route('/users/<string:user_id>', methods=['GET'])
+@cross_origin()
 def get_user(user_id):
     results = conn.execute(""" select * from user
                                 where   ID=%(ID)s;""", {'ID': user_id})
@@ -58,6 +59,7 @@ def get_user(user_id):
     })
 
 @app.route('/users', methods=['POST'])
+@cross_origin()
 def add_user():
     try:
         ID = request.json['ID']
@@ -84,6 +86,7 @@ def add_user():
         }), 400
         
 @app.route('/users/<string:user_id>/organizations', methods=['GET'])
+@cross_origin()
 def user_organizations(user_id):
     query = request.args.get('query')
 
