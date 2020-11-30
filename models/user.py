@@ -38,6 +38,23 @@ def users():
         'users': users
     })
 
+@app.route('/users/<string:user_id>', methods=['GET'])
+def get_user(user_id):
+    results = conn.execute(""" select * from user
+                                where   ID=%(ID)s;""", {'ID': user_id})
+    users = []
+    for row in results:
+        users.append({
+            'ID': row['ID'],
+            'name': row['name'],
+            'phone_number': row['phone_number'],
+            'email': row['email']
+        })
+    return jsonify({
+        'success': True,
+        'users': users
+    })
+
 @app.route('/users', methods=['POST'])
 def add_user():
     try:
