@@ -82,7 +82,7 @@ def send_message(room_id):
     password = os.environ['ORGCHAT_DB_PASSWORD']
     
     engine = create_engine(f'mysql://{username}:{password}@localhost:3306/orgchat')
-    conn = engine1.connect()
+    conn = engine.connect()
 
     try:
         message = request.json['message']
