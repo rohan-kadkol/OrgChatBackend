@@ -1,5 +1,5 @@
 from flask import jsonify, request
-from init_flask import app, conn, db
+from init_flask import app, db
 
 # @app.route('/test/rooms', methods=['GET'])
 # def test_rooms():
@@ -75,6 +75,15 @@ def room_messages(room_id):
 
 @app.route('/rooms/<int:room_id>/messages', methods=['POST'])
 def send_message(room_id):
+    import os
+    from sqlalchemy import create_engine
+
+    username = os.environ['ORGCHAT_DB_USERNAME']
+    password = os.environ['ORGCHAT_DB_PASSWORD']
+    
+    engine = create_engine(f'mysql://{username}:{password}@localhost:3306/orgchat')
+    conn = engine1.connect()
+
     try:
         message = request.json['message']
         sender = request.json['sender']
