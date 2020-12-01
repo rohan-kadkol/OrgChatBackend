@@ -1,8 +1,17 @@
 from flask import jsonify, request
-from init_flask import app, conn
+from init_flask import app
 
 @app.route('/test/organizations', methods=['GET'])
 def test_organizations():
+    import os
+    from sqlalchemy import create_engine
+
+    username = os.environ['ORGCHAT_DB_USERNAME']
+    password = os.environ['ORGCHAT_DB_PASSWORD']
+    
+    engine = create_engine(f'mysql://{username}:{password}@localhost:3306/orgchat')
+    conn = engine.connect()
+
     results = conn.execute(
         """ select  organization.ID, 
                     organization.name,
@@ -18,6 +27,9 @@ def test_organizations():
             'type': row['type'],
             'location': row['location']
         })
+
+    conn.close()
+    
     return jsonify({
         'success': True,
         'organizations': organizations
@@ -25,6 +37,15 @@ def test_organizations():
 
 @app.route('/organizations', methods=['GET'])
 def organizations():
+    import os
+    from sqlalchemy import create_engine
+
+    username = os.environ['ORGCHAT_DB_USERNAME']
+    password = os.environ['ORGCHAT_DB_PASSWORD']
+    
+    engine = create_engine(f'mysql://{username}:{password}@localhost:3306/orgchat')
+    conn = engine.connect()
+
     query = request.args.get('query')
 
     results = conn.execute(
@@ -44,6 +65,8 @@ def organizations():
             'type': row['type'],
             'location': row['location']
         })
+
+    conn.close()
     return jsonify({
         'success': True,
         'organizations': organizations
@@ -57,6 +80,15 @@ def organizations():
 # 	                organization.location as organization_location
 
 def organization_users(organization_id):
+    import os
+    from sqlalchemy import create_engine
+
+    username = os.environ['ORGCHAT_DB_USERNAME']
+    password = os.environ['ORGCHAT_DB_PASSWORD']
+    
+    engine = create_engine(f'mysql://{username}:{password}@localhost:3306/orgchat')
+    conn = engine.connect()
+
     results = conn.execute(
         f""" select 	user.ID as user_id,
 	                user.name as user_name,
@@ -81,6 +113,9 @@ def organization_users(organization_id):
             'phone_number': row['user_phone_number'],
             'email': row['user_email'],
         })
+
+    conn.close()
+
     return jsonify({
         'success': True,
         'registrations': registrations
@@ -88,17 +123,31 @@ def organization_users(organization_id):
 
 @app.route('/organizations/<int:organization_id>/users', methods=['POST'])
 def add_user_to_organization(organization_id):
+    import os
+    from sqlalchemy import create_engine
+
+    username = os.environ['ORGCHAT_DB_USERNAME']
+    password = os.environ['ORGCHAT_DB_PASSWORD']
+    
+    engine = create_engine(f'mysql://{username}:{password}@localhost:3306/orgchat')
+    conn = engine.connect()
+
     try :
         user_id = request.json['user_id']
         print(user_id)
 
         conn.execute('insert into registration values (%(uid)s, %(oid)s);', {'uid': user_id, 'oid': organization_id})
         
+        conn.close()
+
         return jsonify({
             'success': True,
         })
     except Exception as ex:
         print(ex);
+
+        conn.close()
+
         return jsonify({
             'success': False,
             'error': str(ex)
@@ -106,6 +155,15 @@ def add_user_to_organization(organization_id):
     
 @app.route('/organizations/<int:organization_id>/users/<string:user_id>/rooms', methods=['GET'])
 def organization_user_rooms(organization_id, user_id):
+    import os
+    from sqlalchemy import create_engine
+
+    username = os.environ['ORGCHAT_DB_USERNAME']
+    password = os.environ['ORGCHAT_DB_PASSWORD']
+    
+    engine = create_engine(f'mysql://{username}:{password}@localhost:3306/orgchat')
+    conn = engine.connect()
+
     results = conn.execute(
         f"""    select  room.ID,
                         room.name,
@@ -130,6 +188,9 @@ def organization_user_rooms(organization_id, user_id):
             'public': True if row['public'] == 1 else False,
             'organization': row['organization']
         })
+
+    conn.close()
+
     return jsonify({
         'success': True,
         'rooms': rooms
@@ -137,6 +198,15 @@ def organization_user_rooms(organization_id, user_id):
 
 @app.route('/organizations/<int:organization_id>/users/<string:user_id>/rooms', methods=['POST'])
 def add_room_to_organization_and_enroll_user_in_rooms(organization_id, user_id):
+    import os
+    from sqlalchemy import create_engine
+
+    username = os.environ['ORGCHAT_DB_USERNAME']
+    password = os.environ['ORGCHAT_DB_PASSWORD']
+    
+    engine = create_engine(f'mysql://{username}:{password}@localhost:3306/orgchat')
+    conn = engine.connect()
+
     name = request.json['name']
     public = request.json['public']
 
@@ -146,12 +216,18 @@ def add_room_to_organization_and_enroll_user_in_rooms(organization_id, user_id):
         inserted_room_id = result.lastrowid
         conn.execute('insert into room_user values (%(RID)s, %(UID)s);', {'RID': inserted_room_id, 'UID': user_id})
         trans.commit()
+
+        conn.close()
+
         return jsonify({
             'success': True
         })
     except Exception as e:
         print(e)
         trans.rollback()
+
+        conn.close()
+
         return jsonify({
             'success': False,
             'error': str(e)
@@ -160,6 +236,15 @@ def add_room_to_organization_and_enroll_user_in_rooms(organization_id, user_id):
 
 @app.route('/organizations/<int:organization_id>/rooms', methods=['GET'])
 def organization_rooms(organization_id):
+    import os
+    from sqlalchemy import create_engine
+
+    username = os.environ['ORGCHAT_DB_USERNAME']
+    password = os.environ['ORGCHAT_DB_PASSWORD']
+    
+    engine = create_engine(f'mysql://{username}:{password}@localhost:3306/orgchat')
+    conn = engine.connect()
+
     results = conn.execute(
         f""" select 	room.ID,
 	                room.name,
@@ -176,6 +261,9 @@ def organization_rooms(organization_id):
             'public': True if row['public'] == 1 else False,
             'organization': row['organization']
         })
+
+    conn.close()
+
     return jsonify({
         'success': True,
         'rooms': rooms
@@ -183,6 +271,15 @@ def organization_rooms(organization_id):
 
 @app.route('/organizations', methods=['POST'])
 def add_organization():
+    import os
+    from sqlalchemy import create_engine
+
+    username = os.environ['ORGCHAT_DB_USERNAME']
+    password = os.environ['ORGCHAT_DB_PASSWORD']
+    
+    engine = create_engine(f'mysql://{username}:{password}@localhost:3306/orgchat')
+    conn = engine.connect()
+
     try:
         name = request.json['name']
         type = request.json['type']
@@ -195,11 +292,14 @@ def add_organization():
                                 %(location)s);""", 
                                 {'name': name, 'type': type, 'location': location})
 
+        conn.close()
+
         return jsonify({
             'success': True,
         })
     except Exception as ex:
         print(ex)
+        conn.close()
         return jsonify({
             'success': False,
             'error': str(ex)
@@ -207,6 +307,15 @@ def add_organization():
 
 @app.route('/organizations/<int:organization_id>/rooms', methods=['POST'])
 def add_organization_rooms(organization_id):
+    import os
+    from sqlalchemy import create_engine
+
+    username = os.environ['ORGCHAT_DB_USERNAME']
+    password = os.environ['ORGCHAT_DB_PASSWORD']
+    
+    engine = create_engine(f'mysql://{username}:{password}@localhost:3306/orgchat')
+    conn = engine.connect()
+
     try:
         name = request.json['name']
         public = request.json['public']
@@ -218,11 +327,14 @@ def add_organization_rooms(organization_id):
                                 %(organization)s);""", 
                                 {'name': name, 'public': public, 'organization': organization_id})
 
+        conn.close()
+
         return jsonify({
             'success': True
         })
     except Exception as ex:
         print(ex)
+        conn.close()
         return jsonify({
             'success': False,
             'error': str(ex)

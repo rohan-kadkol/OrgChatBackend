@@ -97,11 +97,14 @@ def send_message(room_id):
         message['orgchat'] = (message['orgchat'] + 1) % 1000
         message_ref.set(message)
 
+        conn.close()
+
         return jsonify({
             'success': True,
         })
     except Exception as ex:
         print(ex)
+        conn.close()
         return jsonify({
             'success': False,
             'error': str(ex)
