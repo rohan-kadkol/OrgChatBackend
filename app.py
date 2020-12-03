@@ -12,6 +12,7 @@ from models.room_user import *
 from models.message import *
 
 from ml.data import *
+from ml.predict import *
 
 @app.route('/')
 def index():
