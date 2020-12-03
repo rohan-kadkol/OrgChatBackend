@@ -1,7 +1,7 @@
 from flask import jsonify, abort, request
 from init_flask import app, engine_ml
 
-@app.route('/predict', methods=['GET'])
+@app.route('/predict', methods=['GET', 'POST'])
 def predict():
     raw_data = str(request.json['data'])
 
