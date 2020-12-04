@@ -193,7 +193,7 @@ where ID=%(ID);
 delete from organization where ID=%(ID)s;
 ```
 
-### registration
+### Registration
 
 1. See all the registrations. ie. all the user, organization pairs
 ```
@@ -214,7 +214,7 @@ where 	user.ID = registration.UID and
         organization.type = type.ID;
 ```
 
-### room
+### Room
 
 1. See all rooms
 ```
@@ -256,7 +256,7 @@ insert into message (message, sender, timestamp, room) values
 );
 ```
 
-### room_user
+### Room_user
 
 1. Get all room, user pairs. ie. all users that have join a room pairs
 ```
@@ -273,7 +273,7 @@ where RID=room.ID and UID=user.ID and UOID=organization.ID;
 insert into room_user values (%(RID)s, %(UID)s);
 ```
 
-### message
+### Message
 
 1. See all messages
 ```
@@ -293,5 +293,3 @@ where   message.sender = user.ID and
 ```
 delete from message where ID=%(ID)s;
 ```
-
-###
