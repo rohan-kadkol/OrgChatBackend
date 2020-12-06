@@ -145,7 +145,7 @@ def user_organizations(user_id):
                         organization.name like %(query)s or
                         organization.location like %(query)s)
                         and
-                        registration.UID = %(user_id)s';""", {'query': f'%{query}%', 'user_id': user_id})
+                        registration.UID = %(user_id)s;""", {'query': f'%{query}%', 'user_id': user_id})
         organizations = []
         for row in results:
             organizations.append({
