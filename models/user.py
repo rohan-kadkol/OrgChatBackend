@@ -124,7 +124,7 @@ def add_user():
         return jsonify({
             'success': False,
             'error': str(ex)
-        }), 400
+        }), 500
         
 @app.route('/users/<string:user_id>/organizations', methods=['GET'])
 @cross_origin()

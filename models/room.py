@@ -101,3 +101,23 @@ def send_message(room_id):
             'success': False,
             'error': str(ex)
         })
+
+@app.route('/rooms/<int:room_id>', methods=['DELETE'])
+def delete_room(room_id):
+    try:
+        conn = engine.connect()
+
+        conn.execute(f""" delete from room where ID = {room_id};""")
+
+        conn.close()
+
+        return jsonify({
+            'success': True
+        })
+    except Exception as ex:
+        print(ex)
+        conn.close()
+        return jsonify({
+            'success': False,
+            'error': str(ex)
+        }), 500
