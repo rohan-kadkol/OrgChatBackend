@@ -29,7 +29,7 @@ def test_organizations():
         })
 
     conn.close()
-    
+
     return jsonify({
         'success': True,
         'organizations': organizations
@@ -96,14 +96,12 @@ def organization_users(organization_id):
 	                user.email as user_email
 
             from 	user join registration
-	                join organization
 
-            where 	user.ID = registration.UID and 
-	                organization.id = registration.OID
+            where 	user.ID = registration.UID
                     
                     and
                     
-                    organization.ID = {organization_id};"""
+                    registration.OID = {organization_id};"""
     )
     registrations = []
     for row in results:
