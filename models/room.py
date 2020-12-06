@@ -76,6 +76,8 @@ def room_messages(room_id):
 @app.route('/rooms/<int:room_id>/messages', methods=['POST'])
 def send_message(room_id):
     try:
+        conn = engine.connect()
+
         message = request.json['message']
         sender = request.json['sender']
 
